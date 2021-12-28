@@ -1,0 +1,226 @@
+:root {
+    --orange: #f90;
+    --padding: 0rem clamp(0px, 5vw, 7rem);
+    --round-shadow: 0px 3px 3px grey;
+    --CartGreen: #119e00;
+    --CartGreenPressed: #005900;
+}
+/* index.php */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 1.25rem;
+}
+
+#navbar {
+    background-color: #e0e0e0;
+    color: black;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding: var(--padding);
+    box-shadow: 0px 5px 5px lightgray;
+}
+#logo {
+    width: clamp(7rem,10vw,15rem);
+    height: 100%;
+    background-image: url("./images/Zamaon-logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#nav-container {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.nav-option {
+    padding: 0 0.5rem;
+    text-decoration: none;
+    color: black;
+    transition: 0.1s;
+    text-align: center;
+}
+.nav-option:hover {
+    transition: 0.1s;
+    color: var(--orange);
+}
+.badge {
+    display: inline-block;
+    min-width: 1em;
+    padding: .2em;
+    border-radius: 50%;
+    font-size: 0.8em;
+    text-align: center;
+    background: var(--orange);
+    color: #fefefe;
+}
+
+#main {
+    display: grid;
+    justify-content: center;
+    margin-top: 2rem;
+    padding: var(--padding);
+    grid-template-columns: repeat(auto-fit, minmax(0, max(200px, 100%/5)));
+    grid-gap: 2rem;
+}
+
+.product {
+    box-sizing: border-box;
+    width: 200px;
+    height: 300px;
+    padding: 0.5rem;
+    border: none;
+    border-bottom: 1px solid lightgray;
+    text-align: center;
+    background-color: white;
+    /* background-color: #f90; */
+}
+.product:hover {
+    border: none;
+    box-shadow: var(--round-shadow);
+    border-radius: 5%;
+    transition: 0.1s;
+}
+.imgContainer {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.productImg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* product.php */
+
+.item {
+    display: grid;
+    width: 50vw;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    margin-top: 5rem;
+    height: auto;
+    text-align: center;
+    border-radius: 5%;
+}
+.productImgContainer {
+    height: auto;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+.productInfo {
+    grid-column-start: 4;
+    grid-column-end: -1;
+    border-radius: 5%;
+    border: 2px solid lightgray;
+    padding: 0.7rem;
+}
+
+#addToCart {
+    background-color: var(--CartGreen);
+    border: none;
+    border-radius: 5rem;
+    padding: 1rem;
+    color: white;
+}
+#addToCart:hover {
+    background-color: var(--CartGreenPressed);
+}
+#cartForm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.description {
+    margin-top: 5rem;
+    grid-column-start: 1;
+    grid-column-end: -1;
+
+}
+.amount {
+    border-radius: 2rem;
+    border: 1px solid lightgray;
+    width: 10%;
+    padding: 0.5rem;
+    margin: 0.5rem;
+}
+
+/* cart.php */
+.cartSpace {
+    padding: var(--padding)*2;
+
+}
+
+.cartItem {
+    display: grid;
+    width: 100%;
+    height: 3rem;
+    line-height: 3rem;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    font-size: clamp(8px,1rem,48px );
+    padding: 0.5rem;
+    margin: 0.5rem;
+    grid-template-columns: repeat(5, 1fr);
+}
+.itemPrice {
+    text-align: right;
+}
+#deleteForm {
+    margin: auto;
+}
+.removeItem{
+    box-sizing: border-box;
+    border: 2px solid var(--orange);
+    border-radius: 0.25rem;
+    width: clamp(10px,2rem,50px);
+    height: 2rem;
+    background: transparent;
+    font-weight: bold;
+    font-size: clamp(8px,1rem,48px );
+}
+
+.removeItem:hover {
+    background-color: var(--orange);
+    transition: 0.3s;
+}
+.total {
+    display: block;
+    width: 10.75rem;
+    float: right;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    border-bottom: 2px solid var(--orange);
+}
+.returnLink {
+    color: black;
+}
+.returnLink:hover {
+    color: var(--orange);
+}
+
+/* account.php */
+
+#login {
+    border: 2px solid var(--orange);
+    border-radius: 1rem;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.loginInput{
+    border: 1px solid lightgray;
+    border-radius: 0.5rem;
+    width: 70%;
+}
+
+.loginBtn {
+    background-color: white;
+    padding: 0.3rem 0.7rem;
+}
+.loginBtn:hover{
+    background-color: var(--orange);
+}
