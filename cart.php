@@ -13,7 +13,14 @@
             <a class="nav-option" href="./account.php">Konto</a> 
             <a class="nav-option" href="./cart.php">Koszyk <?php
 				session_start();
-                
+                require_once("./connect.php");
+                $link = new mysqli($host, $db_user, $db_pass, $db_name);
+                $order = $_POST['order'];
+                json_encode($order);
+                if(isset($order) && $order != ""){
+                    $OrderQuery = "INSERT INTO `orders` (id, accountId, items) VALUES (NULL, ".$_SESSION['UID'].",'$order')";
+                    $res = $link->query($OrderQuery);
+                }
 				if(isset($_SESSION['cart'])) {
                 $delete = $_POST['idToDelete'];
                  $_SESSION['cart']['total'] -= $_SESSION['cart'][$delete]['amount'];
@@ -35,8 +42,6 @@
         <div class="cartSpace">
         <?php
             //var_dump($_SESSION['cart']);
-            require_once("./connect.php");
-            $link = new mysqli($host, $db_user, $db_pass, $db_name);
             foreach($_SESSION['cart'] as $item) {
                 if($item['ProductID'] != "") {
                     $ids .= " OR id=".$item['ProductID'];
@@ -64,6 +69,10 @@
             if($total != 0) {
                 $total = str_replace('.', ',',$total); 
                 echo "<span class='total'>Łącznie: ".$total." zł</span>";
+                echo "<form action='' method='post'>
+                    <input type='hidden' name='order' value=".json_encode($_SESSION['cart']).">
+                    <button action='submit' class='addToCart orderBtn'>Zamów!</button>
+                </form>";
             }
             else {
                 echo "<p>Wygląda na to, że nic tu nie ma.</p>";
