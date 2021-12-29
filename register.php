@@ -1,13 +1,23 @@
 <?php
+session_start();
     require_once("./connect.php");
     $link = new mysqli($host, $db_user, $db_pass, $db_name);
     
     if(isset($_POST['login']) && isset($_POST['password']) && $_POST['login'] != '') {
         $login = $_POST['login'];
         $password = sha1($_POST['password']);
-
-        $query = "INSERT INTO `accounts` (login, password) VALUES ('$login', '$password')";
-        $res = $link->query($query);
+        $test = "SELECT * FROM accounts WHERE login = '$login'";
+        $testRes = $link->query($test);
+        
+        if($testRes->num_rows === 0) { 
+            $query = "INSERT INTO `accounts` (login, password, id, isAdmin) VALUES ('$login', '$password', NULL, 0)";
+            $res = $link->query($query);
+            unset($_SESSION['registrationError']);
+            //header('Location: account.php');
+        }
+        else {
+            $_SESSION['registrationError'] = "</br><span style='font-size: 0.7em;'> Ta nazwa użytkownika jest już zajęta!</span>";
+        }
     }
 ?>
 <html lang="en">
@@ -24,7 +34,6 @@
         <div id="nav-container">
             <a class="nav-option" href="./account.php">Konto</a> 
             <a class="nav-option" href="./cart.php">Koszyk <?php
-                session_start();
 
                 if($_SESSION['cart']['total'] != 0) {    
                     echo "
@@ -43,7 +52,10 @@
         <label for='password'>Hasło: </label> <br>
         <input type='password' name='password' class='loginInput'> <br>
         <br>
-        <button action='submit' class='loginInput loginBtn'>Zarejestruj się</button>
+        <button action='submit' class='loginInput loginBtn'>Zarejestruj się</button> <br>
+        <?php
+            echo $_SESSION['registrationError'];
+        ?>
     </form>
 
 
