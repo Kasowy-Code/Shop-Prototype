@@ -42,7 +42,7 @@
 						<form action='addToCart.php' method='post' id='cartForm'>
 							<input type='hidden' name='item' value='".$row['id']."'>
 							<input type='number' name='amount' class='amount' value='1' min='1'>
-							<button action='submit' id='addToCart'>
+							<button action='submit' class='addToCart'>
 							Dodaj do koszyka</button>
 						</form>
 					</div>
