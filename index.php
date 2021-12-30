@@ -13,20 +13,31 @@
             <a class="nav-option" href="./account.php">Konto</a> 
             <a class="nav-option" href="./cart.php">Koszyk <?php
 				session_start();
-
+                require_once("./connect.php");
+                $link = new mysqli($host, $db_user, $db_pass, $db_name);
 				if($_SESSION['cart']['total'] != 0) {    
 					echo "
 						<span class='badge'>".$_SESSION['cart']['total']."</span>
 					
 					";
 				}
-			?></a>
+			echo "</a>";
+            if(isset($_SESSION['logged_in']) && isset($_SESSION['login'])) {
+                $user = $_SESSION['login'];
+                $isAdminQuery = "SELECT isAdmin FROM accounts WHERE login = '$user'";
+                $isAdminRes = $link->query($isAdminQuery);
+                $isAdminRow = mysqli_fetch_assoc($isAdminRes);
+                $isAdmin = $isAdminRow['isAdmin'];
+                if($isAdmin == true) {
+                    echo "<a class='nav-option' href='./adminPanel.php'>Panel</a> ";
+                }
+                echo "<a class='nav-option' href='./logout.php'>Wyloguj</a>";
+            }
+            ?>
         </div>
     </nav>
     <section id="main">
         <?php
-            require_once("./connect.php");
-            $link = new mysqli($host, $db_user, $db_pass, $db_name);
             $query = "SELECT * FROM `Products`";
 
             $res = $link->query($query);

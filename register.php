@@ -41,7 +41,19 @@ session_start();
                     
                     ";
                 }
-            ?></a>
+            echo "</a>";
+            if(isset($_SESSION['logged_in'])) {
+                $user = $_SESSION['login'];
+                $isAdminQuery = "SELECT isAdmin FROM accounts WHERE login = '$user'";
+                $isAdminRes = $link->query($isAdminQuery);
+                $isAdminRow = mysqli_fetch_assoc($isAdminRes);
+                $isAdmin = $isAdminRow['isAdmin'];
+                if($isAdmin == true) {
+                    echo "<a class='nav-option' href='./adminPanel.php'>Panel</a> ";
+                }
+                echo "<a class='nav-option' href='./logout.php'>Wyloguj</a>";
+            }
+            ?>
         </div>
     </nav>
     <section id="main">

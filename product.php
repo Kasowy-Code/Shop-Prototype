@@ -14,22 +14,33 @@
             <a class="nav-option" href="./account.php">Konto</a> 
             <a class="nav-option" href="./cart.php">Koszyk <?php
 				session_start();
-
+				require_once("./connect.php");
+				$link = new mysqli($host, $db_user, $db_pass, $db_name);
 				if($_SESSION['cart']['total'] != 0) {    
 					echo "
 						<span class='badge'>".$_SESSION['cart']['total']."</span>
 					
 					";
 				}
-			?></a>
+			echo "</a>";
+			if(isset($_SESSION['logged_in'])) {
+                $user = $_SESSION['login'];
+                $isAdminQuery = "SELECT isAdmin FROM accounts WHERE login = '$user'";
+                $isAdminRes = $link->query($isAdminQuery);
+                $isAdminRow = mysqli_fetch_assoc($isAdminRes);
+                $isAdmin = $isAdminRow['isAdmin'];
+                if($isAdmin == true) {
+                    echo "<a class='nav-option' href='./adminPanel.php'>Panel</a> ";
+                }
+                echo "<a class='nav-option' href='./logout.php'>Wyloguj</a>";
+            }
+			?>
         </div>
     </nav>
     <section id="main" style=' display: flex; justify-content: center'>
 		<div class="item">
 			<?php
 				$product = $_GET['product'];
-				require_once("./connect.php");
-				$link = new mysqli($host, $db_user, $db_pass, $db_name);
 				$query = "SELECT * FROM `Products` WHERE id = '$product';";
 				$res = $link->query($query);
             	while ($row=mysqli_fetch_assoc($res)) {
@@ -45,6 +56,7 @@
 							<button action='submit' class='addToCart'>
 							Dodaj do koszyka</button>
 						</form>
+						<p>".$row['description_short']."</p>
 					</div>
 					<div class='description'>
 						".$row['Description']."

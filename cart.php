@@ -16,11 +16,18 @@
                 require_once("./connect.php");
                 $link = new mysqli($host, $db_user, $db_pass, $db_name);
                 $order = $_POST['order'];
+                if(isset($_SESSION['UID'])) {
+                    $UID = $_SESSION['UID'];
+                }
+                else {
+                    $UID = 0;
+                }
                 json_encode($order);
                 if(isset($order) && $order != ""){
-                    $OrderQuery = "INSERT INTO `orders` (id, accountId, items) VALUES (NULL, ".$_SESSION['UID'].",'$order')";
+                    $OrderQuery = "INSERT INTO `orders` (id, accountId, items) VALUES (NULL, ".$UID.",'$order')";
                     $res = $link->query($OrderQuery);
                 }
+
 				if(isset($_SESSION['cart'])) {
                 $delete = $_POST['idToDelete'];
                  $_SESSION['cart']['total'] -= $_SESSION['cart'][$delete]['amount'];
@@ -34,7 +41,19 @@
                         ";
                     }
 				}
-			?></a>
+			echo "</a>";
+            if(isset($_SESSION['logged_in'])) {
+                $user = $_SESSION['login'];
+                $isAdminQuery = "SELECT isAdmin FROM accounts WHERE login = '$user'";
+                $isAdminRes = $link->query($isAdminQuery);
+                $isAdminRow = mysqli_fetch_assoc($isAdminRes);
+                $isAdmin = $isAdminRow['isAdmin'];
+                if($isAdmin == true) {
+                    echo "<a class='nav-option' href='./adminPanel.php'>Panel</a> ";
+                }
+                echo "<a class='nav-option' href='./logout.php'>Wyloguj</a>";
+            }
+            ?>
         </div>
     </nav>
     <section id="main" style="display: block; text-align: center;">
