@@ -15,9 +15,61 @@
 				session_start();
                 require_once("./connect.php");
                 $link = new mysqli($host, $db_user, $db_pass, $db_name);
+                if(isset($_POST['NewProduct'])) {
+                    unset($_POST['ProductToChange']);
+                }
+               
+                if(isset($_POST['idToDelete'])) {
+                    $idToDelete = $_POST['idToDelete'];
+                    $deleteItemQuery = "DELETE FROM Products WHERE id = '$idToDelete'";
+                    $SelectImageQuery = "SELECT imageLink FROM Products WHERE id = '$idToDelete'";
+                    $ImageRes = $link->query($SelectImageQuery);
+                    $deleteItemRes = $link->query($deleteItemQuery);
+                    while ($row= mysqli_fetch_assoc($ImageRes)) {
+                        $imageLink = $row['imageLink'];
+                        
+                    }
+                    unlink($imageLink);
+                }
+                if(isset($_POST['ChangeProduct'])) {
+                    if(isset($_FILES["ProductImageUpload"]["name"])) {
+                        $target_dir = "images/";
+                        
+                        $target_file = $target_dir . basename($_FILES["ProductImageUpload"]["name"]);
+                        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                        $check = getimagesize($_FILES["ProductImageUpload"]["tmp_name"]);
+                        $uploadOk = 1;
+
+                        if($check === false) {
+                            $uploadOk = 0;
+                        }
+                        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
+                            $uploadOk = 0;
+                        }
+                        if ($uploadOk != 0) {
+                            if (move_uploaded_file($_FILES["ProductImageUpload"]["tmp_name"], $target_file)) {
+                                unlink($_POST['imageLink']);
+                            }
+                        }
+                    }
+                    else {
+                        $target_file = $_POST['imageLink'];
+                    }
+                    $NewName = $_POST['Name'];
+                    $NewDescription = $_POST['Description'];
+                    $NewDescriptionShort = $_POST['description_short'];
+                    $NewPrice = $_POST['price'];
+                    $ProductToChangeID = $_POST['ChangeProduct'];
+                    $UpdateProductQuery = "UPDATE Products SET Name = '$NewName', Description = '$NewDescription', description_short = '$NewDescriptionShort', Price = '$NewPrice', imageLink = '$target_file' WHERE id = '$ProductToChangeID'";
+                    $test = $link->query($UpdateProductQuery);
+                    // echo $link->error;
+                    // var_dump($UpdateProductQuery);
+                }
 
                 if(isset($_POST['ProductToChange'])) {
-                    $SelectProductQuery = "SELECT * FROM Products WHERE id = ".$_POST['ProductToChange'];
+                    
+                    $ProductToChange = $_POST['ProductToChange'];
+                    $SelectProductQuery = "SELECT * FROM Products WHERE id = '$ProductToChange'";
                     $SelectedProductRes = $link->query($SelectProductQuery);
                     while ($SelectedProduct = mysqli_fetch_assoc($SelectedProductRes)) {
                         $product = [ "Name" => $SelectedProduct["Name"], "Price" => $SelectedProduct["Price"], "Description" => $SelectedProduct["Description"], "description_short" => $SelectedProduct["description_short"], "image" => $SelectedProduct["imageLink"], "id" => $SelectedProduct["id"]];
@@ -52,7 +104,7 @@
                     $AddProductQuery = "INSERT INTO Products (id, Name, Price, Description, description_short, imageLink) VALUES (NULL, '$Name', $Price, '$Description', '$description_short', '$target_file')";
                     $link->query($AddProductQuery);
                     
-                }var_dump($_POST["ProductToChange"]);
+                }
 				if($_SESSION['cart']['total'] != 0) {    
 					echo "
 						<span class='badge'>".$_SESSION['cart']['total']."</span>
@@ -100,7 +152,7 @@
                                     
                                     
                                         <label for='priceInput'>Cena: <br>
-                                            <input type='number' name='Price' class='productInput'> 
+                                            <input type='number' name='Price' class='productInput' step='0.01'> 
                                         </label>
                                 
                                         <label for='description_shortInput'>Krótki opis: 
@@ -114,7 +166,8 @@
                                         <input type='submit' class='AddProductBtn productInput' value='Dodaj produkt'>";
                             }
                             else {
-                                echo "   <input type='hidden' name='ProductToChange' value='".$product['id']."'>
+                                echo "   <input type='hidden' name='ChangeProduct' value='".$product['id']."'>
+                                        <input type='hidden' name='imageLink' value='".$product['image']."'>
                                         <label for='ProductImageUpload' id='ImageUpload'> Zdjęcie produktu: <br>
                                             <div class='imgContainer'><img class='productImg' src=".$product['image']."></div>
                                             <div class='ImageUploadBtn productInput'>Dodaj zdjęcie</div>
@@ -128,7 +181,7 @@
                                     
                                     
                                         <label for='priceInput'>Cena: <br>
-                                            <input type='number' name='price' class='productInput' value='".$product["Price"]."'> 
+                                            <input type='number' name='price' class='productInput' step='0.01' value='".$product["Price"]."'> 
                                         </label>
                                 
                                         <label for='description_shortInput'>Krótki opis: 
@@ -143,25 +196,37 @@
                             }
                             
                         echo "</form>";
-                        //unset($_POST["ProductToChange"]);
                     ?>
                 </div>
             </div>
             <hr style="border: 1px solid var(--orange); margin: 0; padding: 0">
-            <div class="ChooseProduct">
+            <div>
+                <h3>Produkty: </h3>
+                <form action='' method='post'>
+                    <input type='hidden' name='NewProduct' value='true'>
+                    <input type='submit' class='AddNewProductBtn' value='Dodaj Nowy Produkt'>
+                </form>
+                <div class="ChooseProduct">
                         <?php
                         $ShowProductsQuery = "SELECT * FROM Products";
                         $ShowProductsRes = $link->query($ShowProductsQuery);
                         while($ShowProductsRow = mysqli_fetch_assoc($ShowProductsRes)) {
-                            echo "<form action='' method='post' class='productShown'>
+                            echo "<div class='productShown'>
+                                <form action='' method='post' class='productShownForm'>
                                 <input type='hidden' name='ProductToChange' value='".$ShowProductsRow["id"]."'>
-                                <label for='Product' class='ProductLabel'>
-                                    <input type='submit' style='display: none' id='Product'>
-                                    <span>Nazwa: ".$ShowProductsRow["Name"]."</span> <span>Cena: ".$ShowProductsRow["Price"]."</span> <span>ID: ".$ShowProductsRow["id"]."</span> 
+                                <label for='Product".$ShowProductsRow["id"]."' class='ProductLabel'>
+                                    <input type='submit' style='display: none' id='Product".$ShowProductsRow["id"]."'>
+                                    <span>".$ShowProductsRow["Name"]."</span> <span>Cena: ".$ShowProductsRow["Price"]."</span> <span>ID: ".$ShowProductsRow["id"]."</span> 
                                 </label>
-                                </form>";
+                                </form>
+                                <form method='post' action='' id='deleteForm' style='margin: 0'>
+                            <input type='hidden' name='idToDelete' value='".$ShowProductsRow['id']."'>
+                            <button class='removeItem' action='submit'>X</button>
+                        </form>
+                                </div>";
                         }
                         ?>
+                </div>
             </div>
     </section>
 </body>
