@@ -82,8 +82,8 @@
         else {
                  echo "<div style='display: flex; align-items: center;'><h1>Witaj, ".$_SESSION['login']."</h1></div> <hr style='border: 1px solid var(--orange)'>
                 <div class='orderHistory'><h4>Historia zamówień</h4>";
-                
-                $pastOrdersQuery = "SELECT * FROM `orders` WHERE accountId = ".$_SESSION['UID'];
+                $UID = $_SESSION['UID'];
+                $pastOrdersQuery = "SELECT * FROM `orders` WHERE accountId = '$UID' ORDER BY id DESC";
                 $pastOrders = $link->query($pastOrdersQuery);
                
                 while ($pastOrder=mysqli_fetch_assoc($pastOrders)) {
