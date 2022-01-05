@@ -18,7 +18,7 @@
 
                 if(isset($_POST['login']) && $_POST['password']) {
                     $login = $_POST['login'];
-                    $password = sha1($_POST['password']);
+                    $password = sha1(sha1($_POST['password']));
                     $query = "SELECT * FROM `accounts` WHERE login = '$login' AND password = '$password';";
                     $res = $link->query($query);
                     if($res->num_rows > 0) {

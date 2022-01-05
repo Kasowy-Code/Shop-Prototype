@@ -5,7 +5,7 @@ session_start();
     
     if(isset($_POST['login']) && isset($_POST['password']) && $_POST['login'] != '') {
         $login = $_POST['login'];
-        $password = sha1($_POST['password']);
+        $password = sha1(sha1($_POST['password']));
         $test = "SELECT * FROM accounts WHERE login = '$login'";
         $testRes = $link->query($test);
         
