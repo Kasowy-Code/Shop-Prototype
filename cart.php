@@ -97,6 +97,7 @@
                 echo "<p>Wygląda na to, że nic tu nie ma.</p>";
                 echo "<p>Kliknij <a href='./index.php' class='returnLink'>tutaj</a> aby wrócić na stronę główną</p>";
             }
+            $link->close();
         ?>
         </div>
         </section>

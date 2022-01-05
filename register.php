@@ -67,6 +67,7 @@ session_start();
         <button action='submit' class='loginInput loginBtn'>Zarejestruj się</button> <br>
         <?php
             echo $_SESSION['registrationError'];
+            $link->close();
         ?>
     </form>
 

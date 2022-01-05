@@ -107,6 +107,7 @@
                 }
                 echo "</div>";
             }
+            $link->close();
         ?>
         
     </section>

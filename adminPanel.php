@@ -225,6 +225,7 @@
                         </form>
                                 </div>";
                         }
+                        $link->close();
                         ?>
                 </div>
             </div>

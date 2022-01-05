@@ -55,7 +55,7 @@
 				</form>
 				";
             }
-            
+            $link->close();
         ?>
 
     </section>

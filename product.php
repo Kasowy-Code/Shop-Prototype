@@ -64,6 +64,7 @@
 					";
 
 				}
+				$link->close();
 			?>
 		</div>		
     </section>

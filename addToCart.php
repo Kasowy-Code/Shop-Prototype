@@ -1,9 +1,8 @@
 <?php
     $amount = $_POST['amount'];
     $product = $_POST['item'];
-    if(!isset($_SESSION)) {
-        session_start();
-    }
+    session_start();
+    
     if(!isset($_SESSION['cart'])) {
         $_SESSION['cart'] = array();
     }
